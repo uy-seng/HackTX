@@ -1,10 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import Timer from "./timer";
+import hash from 'object-hash';
+import { Editor } from "@monaco-editor/react";
+
 
 export default function Home() {
+  const initialData = JSON.stringify({
+    name: "Example",
+    description: "This is an example JSON",
+    version: "1.0.0"
+  }, null, 2);
+
+  const initialHash = hash(initialData);
+
   // Example progress value (out of 100)
   const progress = 40; // Set this dynamically based on actual game progress
   const chatBoxRef = useRef(null);
+  const [isChat, setIsChat] = useState(true); // State to toggle between chat and code editor
+
 
   const [messages, setMessages] = useState([
     {
@@ -176,6 +189,23 @@ export default function Home() {
 
       {/* Chatbox */}
       <div className="fixed right-0 top-0 h-screen w-[570px] bg-white shadow-lg border-l border-gray-200 z-50 flex flex-col">
+        {/* Toggle Buttons at Top Center */}
+        <div className="flex justify-center items-center p-4 border-b border-gray-200">
+          <button
+            onClick={() => setIsChat(true)}
+            className={`px-4 py-2 rounded-l-lg ${isChat ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
+          >
+            Chat
+          </button>
+          <button
+            onClick={() => setIsChat(false)}
+            className={`px-4 py-2 rounded-r-lg ${!isChat ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
+          >
+            Code Editor
+          </button>
+        </div>
+        
+        {isChat == true?<>
         {/* Chatbox content */}
         <h2 className="p-4 text-lg font-semibold text-black">Chat</h2>
         <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
@@ -228,7 +258,12 @@ export default function Home() {
               </svg>
             </button>
           </form>
-        </div>
+        </div></>: <>
+        <Editor height="90vh" defaultLanguage="python" defaultValue="" />;
+        </>}
+        
+        
+        
       </div>
     </div>
   );
