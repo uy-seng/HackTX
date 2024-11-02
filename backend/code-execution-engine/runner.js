@@ -3,7 +3,8 @@ const cp = require("child_process");
 const readline = require("readline");
 
 const writeCodeToFile = (problemId, userId, lang, code) => {
-  const codeFileName = `${problemId}-${userId}.${lang}`;
+  const codeFileName =
+    lang !== "java" ? `${problemId}-${userId}.${lang}` : "Main.java";
   return new Promise((resolve, reject) => {
     fs.writeFile(`tmp/${codeFileName}`, code, "utf-8", (err) => {
       if (err) {
@@ -140,8 +141,12 @@ const cleanUpSubmissionFile = async (
     // delete executable file
     await deleteFile(`tmp/${executableFileName}`);
   }
-  // delete solution file name
-  await deleteFile(`tmp/${solutionFileName}`);
+  if (lang !== "java") {
+    // delete solution file name
+    await deleteFile(`tmp/${solutionFileName}`);
+  } else {
+    await deleteFile("tmp/Main.java");
+  }
 };
 
 module.exports = {
