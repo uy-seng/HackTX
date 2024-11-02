@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Timer from "./timer";
+import Timer from "./Timer";
 import hash from 'object-hash';
-import { Editor } from "@monaco-editor/react";
-
+import Editor from "@monaco-editor/react";
 
 export default function Home() {
   const initialData = JSON.stringify({
@@ -17,8 +16,6 @@ export default function Home() {
   const progress = 40; // Set this dynamically based on actual game progress
   const chatBoxRef = useRef(null);
   const [isChat, setIsChat] = useState(true); // State to toggle between chat and code editor
-
-
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -28,13 +25,12 @@ export default function Home() {
     },
   ]);
   const [userInput, setUserInput] = useState("");
-  const [chatLang, setChatLang] = useState("en");
+  const [chatLang, setChatLang] = useState("en"); // Define chatLang here
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput) return;
 
-    // Add user's message to the chat in the expected format
     const userMessage = {
       role: "user",
       content: [{ type: "text", text: userInput }],
@@ -42,7 +38,6 @@ export default function Home() {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      // Send user message to API route
       const response = await fetch("/api/anthropic/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,13 +46,11 @@ export default function Home() {
 
       const data = await response.json();
 
-      // Append the assistant's response to the chat in the expected format
       const assistantMessage = {
         role: "assistant",
         content: [...data.content],
       };
 
-      console.log([...messages, assistantMessage]);
       setMessages((prevMessages) => [...prevMessages, assistantMessage]);
     } catch (error) {
       console.error("Error:", error);
@@ -75,12 +68,10 @@ export default function Home() {
 
   useEffect(() => {
     if (chatBoxRef.current) {
-      // Reset the height to "auto" to properly calculate the new scrollHeight
       chatBoxRef.current.style.height = "auto";
-      // Set the height to match the scrollHeight (content height)
       chatBoxRef.current.style.height = `${chatBoxRef.current.scrollHeight}px`;
     }
-  }, [userInput]); // This effect runs every time userInput changes
+  }, [userInput]);
 
   return (
     <div
@@ -91,7 +82,7 @@ export default function Home() {
       }}
     >
       <Timer />
-      <div>
+      <div className="absolute top-10 left-10">
         <h1>Language</h1>
         <label htmlFor="ChatLanguageSelect">Select Language: </label>
         <select
@@ -103,7 +94,8 @@ export default function Home() {
           <option value="zh_CN">Simplified Chinese</option>
         </select>
       </div>
-      {/* Progress Bar at the top */}
+      
+      {/* Progress Bar */}
       <div
         className="fixed z-50 flex items-center"
         style={{ top: "60px", left: "0", right: "570px" }}
@@ -115,7 +107,6 @@ export default function Home() {
               style={{ width: `${progress}%` }}
             />
           </div>
-          {/* Increment Circles */}
           <div className="absolute left-0 flex justify-between w-full">
             <div className="flex flex-col items-center">
               <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
@@ -139,53 +130,45 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Character section on the left */}
-      <div className="flex flex-col justify-end items-center w-[calc(100%-570px)] p-4 min-h-screen">
-        <div className="flex items-center justify-between w-full px-8 mb-4">
-          {/* Mockey Character */}
-          <div className="flex flex-col items-center">
-            <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-              <div
-                className="h-full bg-green-500"
-                style={{ width: "80%" }}
-              ></div>
-            </div>
-            <img
-              src="/mockey.png"
-              alt="Mockey"
-              className="h-48 w-48 object-contain"
-            />
-            <p className="text-xs">Health: 80/100</p>
-          </div>
-
-          {/* Cat Character */}
-          <div className="flex flex-col items-center">
-            <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-              <div
-                className="h-full bg-green-500"
-                style={{ width: "60%" }}
-              ></div>
-            </div>
-            <img
-              src="/cat.png"
-              alt="Cat"
-              className="h-48 w-48 object-contain"
-            />
-            <p className="text-xs">Health: 60/100</p>
-          </div>
-        </div>
-
-        {/* Centered Question Box */}
-        <div className="bg-white shadow-md p-4 rounded mb-8 w-3/4 max-w-lg text-black text-center">
-          <h2 className="text-lg font-semibold">Question</h2>
-          <p className="mt-2">
-            Given an array of integers, return indices of the two numbers such
-            that they add up to a specific target. You may assume that each
-            input would have exactly one solution, and you may not use the same
-            element twice. You can return the answer in any order.
-          </p>
-        </div>
+{/* Characters and Question Box */}
+<div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
+  <div className="flex items-center justify-center w-full px-8" style={{ marginLeft: '-240px', marginTop: '200px'}}>
+    {/* Monkey Character */}
+    <div className="flex flex-col items-center mr-16 w-56"> {/* Adjust width here */}
+      <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+        <div className="h-full bg-green-500" style={{ width: '80%' }}></div>
       </div>
+      <img
+        src="/mockey.png"
+        alt="Monkey"
+        className="h-48 w-48 object-contain"
+      />
+      <p className="text-xs">Health: 80/100</p>
+    </div>
+
+    {/* Cat Character */}
+    <div className="flex flex-col items-center ml-16 w-56"> {/* Adjust width here */}
+      <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+        <div className="h-full bg-green-500" style={{ width: '60%' }}></div>
+      </div>
+      <img
+        src="/cat.png"
+        alt="Cat"
+        className="h-48 w-48 object-contain"
+      />
+      <p className="text-xs">Health: 60/100</p>
+    </div>
+  </div>
+
+  {/* Centered Question Box */}
+  <div className="bg-white shadow-md p-2 rounded w-full text-black text-center" style={{ height: '150px', marginLeft: '-240px'}}> {/* Adjust margin here */}
+    <h2 className="text-lg font-semibold">Question</h2>
+    <p className="mt-2">
+      Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.
+    </p>
+  </div>
+</div>
+
 
       {/* Chatbox */}
       <div className="fixed right-0 top-0 h-screen w-[570px] bg-white shadow-lg border-l border-gray-200 z-50 flex flex-col">
@@ -193,77 +176,67 @@ export default function Home() {
         <div className="flex justify-center items-center p-4 border-b border-gray-200">
           <button
             onClick={() => setIsChat(true)}
-            className={`px-4 py-2 rounded-l-lg ${isChat ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
+            className={`px-4 py-2 rounded-l-lg ${isChat ? 'bg-purple-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
           >
             Chat
           </button>
           <button
             onClick={() => setIsChat(false)}
-            className={`px-4 py-2 rounded-r-lg ${!isChat ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
+            className={`px-4 py-2 rounded-r-lg ${!isChat ? 'bg-blue-800 text-white' : 'bg-gray-200 text-gray-800'} transition`}
           >
             Code Editor
           </button>
         </div>
-        
-        {isChat == true?<>
-        {/* Chatbox content */}
-        <h2 className="p-4 text-lg font-semibold text-black">Chat</h2>
-        <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
-          {/* Messages will be displayed here */}
-          {messages.map((msg, index) => (
-            <div
-              className="text-black"
-              key={index}
-              style={{
-                textAlign: msg.role === "user" ? "right" : "left",
-                margin: "0.5rem 0",
-              }}
-            >
-              <strong>{msg.role === "user" ? "You" : "Assistant"}:</strong>{" "}
-              {msg.content.map((contentItem, idx) => (
-                <span key={idx}>{contentItem.text}</span>
+
+        {isChat ? (
+          <>
+            <h2 className="p-4 text-lg font-semibold text-black">Chat</h2>
+            <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
+              {messages.map((msg, index) => (
+                <div
+                  className="text-black"
+                  key={index}
+                  style={{
+                    textAlign: msg.role === "user" ? "right" : "left",
+                    margin: "0.5rem 0",
+                  }}
+                >
+                  <strong>{msg.role === "user" ? "You" : "Assistant"}:</strong>{" "}
+                  {msg.content.map((contentItem, idx) => (
+                    <span key={idx}>{contentItem.text}</span>
+                  ))}
+                </div>
               ))}
             </div>
-          ))}
-        </div>
-        <div className="p-4 border-t border-gray-200">
-          <form onSubmit={handleSubmit} className="flex items-center">
-            <textarea
-              ref={chatBoxRef}
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="Type a message..."
-              className="flex-grow p-3 border border-gray-300 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-              rows={1} /* This controls the initial height */
-              style={{ overflowWrap: "break-word", width: "100%" }}
-            />
-            <button
-              type="submit"
-              className="ml-2 bg-gray-800 text-white p-2 rounded-r-lg shadow hover:bg-gray-700 transition flex items-center justify-center"
-            >
-              {/* Up Arrow SVG */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 16h-1v-4h-1m0 0H8l4-4 4 4h-3z"
+            <div className="p-4 border-t border-gray-200">
+              <form onSubmit={handleSubmit} className="flex items-center">
+                <textarea
+                  ref={chatBoxRef}
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type a message..."
+                  className="flex-grow p-3 border border-gray-300 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+                  rows={1}
+                  style={{ overflowWrap: "break-word", width: "100%" }}
                 />
-              </svg>
-            </button>
-          </form>
-        </div></>: <>
-        <Editor height="90vh" defaultLanguage="python" defaultValue="" />;
-        </>}
-        
-        
-        
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-purple-700 text-white font-semibold rounded-r-lg"
+                >
+                  Send
+                </button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <div className="flex-grow overflow-hidden">
+            <Editor
+              height="100%"
+              defaultLanguage="javascript"
+              defaultValue="// Start coding here..."
+            />
+          </div>
+        )}
       </div>
     </div>
   );
