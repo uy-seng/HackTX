@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Timer from "./timer";
 
 export default function Home() {
   // Example progress value (out of 100)
@@ -76,6 +77,7 @@ export default function Home() {
           "url('https://cdna.artstation.com/p/assets/images/images/019/969/350/large/florian-mazreku-outcasts-background-final.jpg?1565792939')",
       }}
     >
+      <Timer />
       <div>
         <h1>Language</h1>
         <label htmlFor="ChatLanguageSelect">Select Language: </label>
