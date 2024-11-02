@@ -8,6 +8,7 @@ export default function InterviewChat() {
     },
   ]);
   const [userInput, setUserInput] = useState("");
+  const [chatLang, setChatLang] = useState("en");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,13 +23,11 @@ export default function InterviewChat() {
       const response = await fetch("/api/anthropic/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userMessage: userInput }),
+        body: JSON.stringify({ userMessage: userInput, lang: chatLang }),
       });
 
       const data = await response.json();
 
-
-      console.log(data.content)
       // Append the assistant's response to the chat in the expected format
       const assistantMessage = { role: "assistant", content: [...data.content] };
 
@@ -47,6 +46,14 @@ export default function InterviewChat() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "auto", padding: "1rem" }}>
+    <div>
+      <h1>Language</h1>
+      <label htmlFor="ChatLanguageSelect">Select Language: </label>
+        <select id="ChatLanguageSelect" value={chatLang} onChange={(e) => setChatLang(e.target.value)}>
+          <option value="en">English</option>
+          <option value="zh_CN">Simplified Chinese</option>
+        </select> 
+    </div>
       <div>
         <h1>Problem</h1>
         <p>

@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  const { userMessage } = req.body;
+  const { userMessage, lang } = req.body;
   // Create interview prompt
   const promptTemplate = `
 You are an AI simulating a technical interviewer for a coding problem. Your task is to engage in a realistic interview conversation, focusing on the interviewee's problem-solving approach rather than just the final solution.
@@ -45,6 +45,9 @@ Format the conversation as follows:
 [Interviewee] The user's responses (Do not generate these)
 
 At the end of the interview, provide a rating and feedback using <evaluation> tags.
+
+Use the following language for the interview:
+${lang}
 `;
 
   try {
