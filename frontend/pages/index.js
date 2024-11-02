@@ -64,7 +64,7 @@ export default function Home() {
       // Reset the height to "auto" to properly calculate the new scrollHeight
       chatBoxRef.current.style.height = "auto";
       // Set the height to match the scrollHeight (content height)
-      chatBoxRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      chatBoxRef.current.style.height = `${chatBoxRef.current.scrollHeight}px`;
     }
   }, [userInput]); // This effect runs every time userInput changes
 
