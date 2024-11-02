@@ -1,8 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
 const { Pool } = require('pg');
+const codeExecutionRouter = require("./routes/code-execution");
 const app = express();
-// const port = 5000;
 
 const {PGHOST, PGDATABASE, PGUSER, PGPASSWORD} = process.env;
 console.log(PGHOST, PGDATABASE, PGUSER, PGPASSWORD);
@@ -21,6 +21,8 @@ const pool = new Pool({
   idleTimeoutMillis: 15000,
 })
 
+app.use(express.json());
+app.use("/code-execution", codeExecutionRouter);
 app.get("/", async (req, res) => {
   try {
     console.log("Attempting to connect to the database...");
