@@ -25,6 +25,7 @@ export default function Home() {
       router.push("/login");
     }
   }, [])
+  const [llmThinking, setLlmThinking] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -280,8 +281,8 @@ export default function Home() {
           style={{ top: "0", left: "0", right: "570px" }}
         >
           <div className="w-full px-4 py-4">
-          <div className="absolute left-20 flex justify-between w-3/4 p-4"> {/* Adjust left here */}
-          <div className="flex flex-col items-center">
+            <div className="absolute left-20 flex justify-between w-3/4 p-4">
+              <div className="flex flex-col items-center">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">1</span>
                 </div>
@@ -468,43 +469,49 @@ export default function Home() {
       </div>
     );
   else
-  return (
-    <div id="background" className="flex items-center justify-center h-screen"> {/* Center content vertically and horizontally */}
+    return (
       <div
-        className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
-        style={{
-          maxWidth: '400px', // Set a maximum width for the container
-          width: '100%', // Ensure it takes full width up to max-width
-        }}
+        id="background"
+        className="flex items-center justify-center h-screen"
       >
-        <h2 className="text-2xl font-bold text-black mb-4">Choose Your Difficulty:</h2>
-        
-        {/* Level selection buttons */}
-        <div className="flex flex-col items-center">
-          <button
-            value="easy"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Easy
-          </button>
-          <button
-            value="medium"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Medium
-          </button>
-          <button
-            value="hard"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Hard
-          </button>
+        {" "}
+        {/* Center content vertically and horizontally */}
+        <div
+          className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
+          style={{
+            maxWidth: "400px", // Set a maximum width for the container
+            width: "100%", // Ensure it takes full width up to max-width
+          }}
+        >
+          <h2 className="text-2xl font-bold text-black mb-4">
+            Choose Your Difficulty:
+          </h2>
+
+          {/* Level selection buttons */}
+          <div className="flex flex-col items-center">
+            <button
+              value="easy"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Easy
+            </button>
+            <button
+              value="medium"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Medium
+            </button>
+            <button
+              value="hard"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Hard
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-  
-}  
+    );
+}
