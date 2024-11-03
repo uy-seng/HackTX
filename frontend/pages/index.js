@@ -1,33 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Timer from "./timer";
 import Editor from "@monaco-editor/react";
-import ReactMarkdown from "react-markdown";
 
 export default function Home() {
-  /**
-   * problems, solutions and code template selection
-   */
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [problems, setProblems] = useState([]);
-  const [solutions, setSolutions] = useState([]);
-  const [codeTemplates, setCodeTemplate] = useState([]);
-  useEffect(() => {
-    console.log(problems);
-    if (problems.length > 0) {
-      // loop through problems and fetch solutions
-      problems.forEach((problem) => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${problem.id}/solutions`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            setSolutions((prev) => [...prev, data.solutions]);
-          });
-      });
-    }
-  }, [problems]);
-  /** end of question selection */
-
   /**
    * LLM Related Stuff
    */
@@ -41,7 +16,6 @@ export default function Home() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [chatLang, setChatLang] = useState("en"); // Define chatLang here
-  const [llmThinking, setLlmThinking] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,17 +28,10 @@ export default function Home() {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      setMessages((prevMessages) => [...prevMessages, {role: "assistant", content: [{ type: "text", text: "Thinking..." }],}]);
-
       const response = await fetch("/api/anthropic/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userMessage: userInput,
-          lang: chatLang,
-          problem: problems[currentQuestion].statement,
-          solutions: solutions[currentQuestion],
-        }),
+        body: JSON.stringify({ userMessage: userInput, lang: chatLang }),
       });
 
       const data = await response.json();
@@ -236,18 +203,21 @@ export default function Home() {
       // Fetch problems based on level
       fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${level}`)
         .then((res) => res.json())
-        .then((data) => {
-          data.problems.forEach((problem) => {
-            setProblems((prev) => [
-              ...prev,
-              { statement: problem.statement, id: problem.id },
-            ]);
-            setCodeTemplate((prev) => [...prev, problem.templates[2]]);
-          });
-        });
+        .then((data) => console.log(data));
     }
-  }, [level]);
+  }, [level])
   /** end of levels selection */
+
+  /**
+   * problems, solutions and code template selection 
+   */
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [problems, setProblems] = useState([]);
+  const [solutions, setSolutions] = useState([]);
+  const [codeTemplates, setCodeTemplate] = useState([]);
+  /** end of question selection */
+
+
 
   if (level)
     return (
@@ -263,93 +233,77 @@ export default function Home() {
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">1</span>
                 </div>
-                <span className="text-xs mt-1">Start</span>
+                <span className="text-xs mt-1 text-black">Start</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">2</span>
                 </div>
-                <span className="text-xs mt-1">Mid</span>
+                <span className="text-xs mt-1 text-black">Mid</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">3</span>
                 </div>
-                <span className="text-xs mt-1">End</span>
+                <span className="text-xs mt-1 text-black">End</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Characters and Question Box */}
-        <div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
-          <div
-            className="flex items-center justify-center w-full px-8"
-            style={{ marginLeft: "-240px", marginTop: "290px" }}
-          >
-            {" "}
-            {/* Increased marginTop */}
-            {/* Monkey Character */}
-            <div className="flex flex-col items-center mr-16 w-56 relative">
-              {" "}
-              {/* Adjust width here */}
-              <p className="text-xs">Health: 80/100</p>
-              <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-                <div
-                  className="h-full bg-green-500"
-                  style={{ width: "80%" }}
-                ></div>
-              </div>
-              <img
-                ref={monkeySprite}
-                src={`/${monkeyCurrentFrame}`}
-                alt="Monkey"
-                className="h-48 w-48 object-contain"
-              />
-              <img
-                ref={bananaSprite}
-                src="/banana.png"
-                alt="Monkey"
-                className="h-8 w-8 object-contain absolute right-[10px] bottom-[100px] invisible"
-              />
-            </div>
-            {/* Cat Character */}
-            <div className="flex flex-col items-center ml-16 w-56">
-              {" "}
-              {/* Adjust width here */}
-              <p className="text-xs">Health: 60/100</p>
-              <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-                <div
-                  className="h-full bg-red-500"
-                  style={{ width: "60%" }}
-                ></div>
-              </div>
-              <img
-                ref={catSprite}
-                src={`/${catCurrentFrame}`}
-                alt="Cat"
-                className="h-48 w-48 object-contain"
-              />
-            </div>
-          </div>
+        {/* Container for Characters and Question Box */}
+<div className="flex flex-col w-[calc(100%-570px)] h-screen p-4">
+  {/* Centered Question Box */}
+  <div
+  className="bg-white shadow-md p-4 rounded w-full text-black text-left mb-4 pt-10" // Added padding-top here
+  style={{ height: "190px" }}
+  >
+    <h2 className="text-lg font-semibold pt-4">Question</h2>
+    <p className="mt-2">
+      Given an array of integers, return indices of the two numbers such
+      that they add up to a specific target. You may assume that each
+      input would have exactly one solution, and you may not use the
+      same element twice. You can return the answer in any order.
+    </p>
+  </div>
 
-          {/* Centered Question Box */}
-          <div
-            className="bg-white shadow-md p-2 rounded w-full text-black text-left overflow-scroll"
-            style={{ height: "150px" }}
-          >
-            {" "}
-            {/* Adjust margin here */}
-            <h2 className="text-lg font-semibold">Question</h2>
-            <p className="mt-2">
-              {problems.length > 0 && (
-                <ReactMarkdown>
-                  {problems[currentQuestion].statement}
-                </ReactMarkdown>
-              )}
-            </p>
-          </div>
-        </div>
+  {/* Characters Section */}
+  <div className="flex items-center justify-center w-full flex-grow px-8">
+    {/* Monkey Character */}
+    <div className="flex flex-col items-center mr-16 w-56 relative">
+      <p className="text-xs">Health: 80/100</p>
+      <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+        <div className="h-full bg-green-500" style={{ width: "80%" }}></div>
+      </div>
+      <img
+        ref={monkeySprite}
+        src={`/${monkeyCurrentFrame}`}
+        alt="Monkey"
+        className="h-48 w-48 object-contain"
+      />
+      <img
+        ref={bananaSprite}
+        src="/banana.png"
+        alt="Banana"
+        className="h-8 w-8 object-contain absolute right-[10px] bottom-[100px] invisible"
+      />
+    </div>
+    {/* Cat Character */}
+    <div className="flex flex-col items-center ml-16 w-56">
+      <p className="text-xs">Health: 60/100</p>
+      <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+        <div className="h-full bg-red-500" style={{ width: "60%" }}></div>
+      </div>
+      <img
+        ref={catSprite}
+        src={`/${catCurrentFrame}`}
+        alt="Cat"
+        className="h-48 w-48 object-contain"
+      />
+    </div>
+  </div>
+</div>
+
 
         {/* Chatbox */}
         <div className="fixed right-0 top-0 h-screen w-[570px] bg-white shadow-lg z-50 flex flex-col">
