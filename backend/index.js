@@ -8,6 +8,9 @@ const codeExecutionRouter = require("./routes/code-execution");
 const problemsRouter = require("./routes/problems");
 const app = express();
 
+const cors = require('cors');
+app.use(cors());
+
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 const JWT_SECRET = process.env.JWT_SECRET;
 

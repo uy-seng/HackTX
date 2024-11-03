@@ -1,32 +1,37 @@
-// pages/login.js
-
 import { useState } from 'react';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page refresh
-    setMessage(''); // Clear any previous message
+    e.preventDefault();
+    setMessage('');
+    setIsLoading(true); // Indicate loading state
 
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await fetch('https://localhost:3001/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      setMessage(`Login successful! Token: ${data.token}`);
-      // Optionally, store the token in local storage
-      localStorage.setItem('token', data.token);
-    } else {
-      const errorMessage = await response.text();
-      setMessage(`Login failed: ${errorMessage}`);
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // Store token securely
+        setMessage('Login successful!'); // Update message
+      } else {
+        const errorMessage = await response.text();
+        setMessage(`Login failed1: ${errorMessage}`); // Display error message
+      }
+    } catch (error) {
+      setMessage(`Login failed2: ${error.message}`); // Handle fetch errors
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
 
@@ -61,8 +66,12 @@ const Login = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
-          <button type="submit" className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none">
-            Login
+          <button
+            type="submit"
+            className={`w-full px-4 py-2 font-bold text-white rounded-md focus:outline-none ${isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+            disabled={isLoading} // Disable button during loading
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
         {message && <p className="mt-4 text-red-600">{message}</p>}
