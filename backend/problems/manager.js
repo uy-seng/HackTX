@@ -1,4 +1,5 @@
 const fs = require('fs');
+const db = require('../utils/db');
 
 const getProblemIdByDifficulty = (level) => {
   if (level === "easy") {
@@ -44,7 +45,13 @@ const getProblemById = async (problemId) => {
   }
 }
 
+const getSolutionsByProblemId = async(problemId) => {
+  const results = await db.query("SELECT * from editorials WHERE problem_id = $1", [problemId]);
+  return results.rows.map((obj) => obj.code);
+}
+
 module.exports = {
   getProblemById,
-  getProblemIdByDifficulty
+  getProblemIdByDifficulty,
+  getSolutionsByProblemId
 }

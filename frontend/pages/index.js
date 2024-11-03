@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Timer from "./timer";
-import hash from "object-hash";
 import Editor from "@monaco-editor/react";
 
 export default function Home() {
@@ -93,9 +92,7 @@ export default function Home() {
     "mockey-laugh-1.png",
     "mockey-laugh-2.png",
   ];
-  const [monkeyCurrentFrame, setMonkeyCurrentFrame] = useState(
-    "mockey.gif"
-  );
+  const [monkeyCurrentFrame, setMonkeyCurrentFrame] = useState("mockey.gif");
   let catFrames = ["cat.png", "cat-angry.png"];
   const [catCurrentFrame, setCatCurrentFrame] = useState("cat.gif");
   let currentMonkeyFrame = 0;
@@ -112,7 +109,7 @@ export default function Home() {
         throwBanana();
         setMonkeyCurrentFrame("mockey-throw-bananas-1.png");
         currentMonkeyFrame = 0;
-      }else{
+      } else {
         currentMonkeyFrame++;
       }
     }, 100); // Adjust the frame interval as needed
@@ -140,7 +137,7 @@ export default function Home() {
         currentCatFrame++;
       }
     }, 50); // Adjust the frame interval as needed
-  
+
     // Stop the animation after a set duration (e.g., 5 seconds)
     setTimeout(() => {
       currentCatFrame = 0;
@@ -148,7 +145,6 @@ export default function Home() {
       setCatCurrentFrame("cat.gif"); // Reset to default frame
     }, 2000); // Adjust the timeout duration as needed
   }
-
 
   // Function to throw the banana
   function throwBanana() {
@@ -186,208 +182,259 @@ export default function Home() {
   function detectCollision(a, b, offset = 0) {
     const aRect = a.current.getBoundingClientRect();
     const bRect = b.current.getBoundingClientRect();
-  
+
     return !(
-      aRect.right < bRect.left - offset ||   // Extend left boundary of b
-      aRect.left > bRect.right + offset ||   // Extend right boundary of b
-      aRect.bottom < bRect.top - offset ||   // Extend top boundary of b
-      aRect.top > bRect.bottom + offset      // Extend bottom boundary of b
+      (
+        aRect.right < bRect.left - offset || // Extend left boundary of b
+        aRect.left > bRect.right + offset || // Extend right boundary of b
+        aRect.bottom < bRect.top - offset || // Extend top boundary of b
+        aRect.top > bRect.bottom + offset
+      ) // Extend bottom boundary of b
     );
   }
   /** end of monkey throwing bananas animation */
 
-  return (
-    <div
-      className="flex relative min-h-screen bg-cover"
-      id="background"
-    >
-      {/* Progress Bar */}
-      <div
-        className="fixed z-50 flex items-center"
-        style={{ top: "0", left: "0", right: "570px" }}
-      >
-        <div className="w-full px-4">
-          <div className="absolute left-0 flex justify-between w-full p-4">
-            <div className="flex flex-col items-center">
-              <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
-                <span className="text-black">1</span>
-              </div>
-              <span className="text-xs mt-1">Start</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
-                <span className="text-black">2</span>
-              </div>
-              <span className="text-xs mt-1">Mid</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
-                <span className="text-black">3</span>
-              </div>
-              <span className="text-xs mt-1">End</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  /**
+   * levels selection before starting
+   */
+  const [level, setLevel] = useState(null);
+  useEffect(() => {
+    if (level) {
+      // Fetch problems based on level
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${level}`)
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }
+  }, [level])
+  /** end of levels selection */
 
-      {/* Characters and Question Box */}
-      <div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
+  /**
+   * problems, solutions and code template selection 
+   */
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [problems, setProblems] = useState([]);
+  const [solutions, setSolutions] = useState([]);
+  const [codeTemplates, setCodeTemplate] = useState([]);
+  /** end of question selection */
+
+
+
+  if (level)
+    return (
+      <div className="flex relative min-h-screen bg-cover" id="background">
+        {/* Progress Bar */}
         <div
-          className="flex items-center justify-center w-full px-8"
-          style={{ marginLeft: "-240px", marginTop: "290px" }}
+          className="fixed z-50 flex items-center"
+          style={{ top: "0", left: "0", right: "570px" }}
         >
-          {" "}
-          {/* Increased marginTop */}
-          {/* Monkey Character */}
-          <div className="flex flex-col items-center mr-16 w-56 relative">
-            {" "}
-            {/* Adjust width here */}
-            <p className="text-xs">Health: 80/100</p>
-            <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-              <div
-                className="h-full bg-green-500"
-                style={{ width: "80%" }}
-              ></div>
-            </div>
-            <img
-              ref={monkeySprite}
-              src={`/${monkeyCurrentFrame}`}
-              alt="Monkey"
-              className="h-48 w-48 object-contain"
-            />
-            <img
-              ref={bananaSprite}
-              src="/banana.png"
-              alt="Monkey"
-              className="h-8 w-8 object-contain absolute right-[10px] bottom-[100px] invisible"
-            />
-          </div>
-          {/* Cat Character */}
-          <div className="flex flex-col items-center ml-16 w-56">
-            {" "}
-            {/* Adjust width here */}
-            <p className="text-xs">Health: 60/100</p>
-            <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-              <div className="h-full bg-red-500" style={{ width: "60%" }}></div>
-            </div>
-            <img
-              ref={catSprite}
-              src={`/${catCurrentFrame}`}
-              alt="Cat"
-              className="h-48 w-48 object-contain"
-            />
-          </div>
-        </div>
-
-        {/* Centered Question Box */}
-        <div
-          className="bg-white shadow-md p-2 rounded w-full text-black text-left"
-          style={{ height: "150px" }}
-        >
-          {" "}
-          {/* Adjust margin here */}
-          <h2 className="text-lg font-semibold">Question</h2>
-          <p className="mt-2">
-            Given an array of integers, return indices of the two numbers such
-            that they add up to a specific target. You may assume that each
-            input would have exactly one solution, and you may not use the same
-            element twice. You can return the answer in any order.
-          </p>
-        </div>
-      </div>
-
-      {/* Chatbox */}
-      <div className="fixed right-0 top-0 h-screen w-[570px] bg-white shadow-lg z-50 flex flex-col">
-        <div className="text-black flex flex-row items-center justify-between border-b border-gray-200 p-4">
-          <Timer />
-          {/* Toggle Buttons at Top Center */}
-          <div className="flex justify-center items-center">
-            <button
-              onClick={() => setIsChat(true)}
-              className={`px-4 py-2 rounded-l-lg ${
-                isChat
-                  ? "bg-purple-800 text-white"
-                  : "bg-gray-200 text-gray-800"
-              } transition`}
-            >
-              Chat
-            </button>
-            <button
-              onClick={() => setIsChat(false)}
-              className={`px-4 py-2 rounded-r-lg ${
-                !isChat ? "bg-blue-800 text-white" : "bg-gray-200 text-gray-800"
-              } transition`}
-            >
-              Code Editor
-            </button>
-          </div>
-        </div>
-
-        {isChat ? (
-          <>
-            <div className="text-black p-4">
-              <label htmlFor="ChatLanguageSelect">Chat Language: </label>
-              <select
-                id="ChatLanguageSelect"
-                value={chatLang}
-                onChange={(e) => setChatLang(e.target.value)}
-              >
-                <option value="en">English</option>
-                <option value="zh_CN">Simplified Chinese</option>
-              </select>
-            </div>
-            <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
-              {messages.map((msg, index) => (
-                <div
-                  className="text-black"
-                  key={index}
-                  style={{
-                    textAlign: msg.role === "user" ? "right" : "left",
-                    margin: "0.5rem 0",
-                  }}
-                >
-                  <strong>{msg.role === "user" ? "You" : "Assistant"}:</strong>{" "}
-                  {msg.content.map((contentItem, idx) => (
-                    <span key={idx}>{contentItem.text}</span>
-                  ))}
+          <div className="w-full px-4">
+            <div className="absolute left-0 flex justify-between w-full p-4">
+              <div className="flex flex-col items-center">
+                <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
+                  <span className="text-black">1</span>
                 </div>
-              ))}
+                <span className="text-xs mt-1">Start</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
+                  <span className="text-black">2</span>
+                </div>
+                <span className="text-xs mt-1">Mid</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
+                  <span className="text-black">3</span>
+                </div>
+                <span className="text-xs mt-1">End</span>
+              </div>
             </div>
-            <div className="p-4 border-t border-gray-200">
-              <form onSubmit={handleSubmit} className="flex items-center">
-                <textarea
-                  ref={chatBoxRef}
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Type a message..."
-                  className="flex-grow p-3 border border-gray-300 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                  rows={1}
-                  style={{ overflowWrap: "break-word", width: "100%" }}
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-purple-700 text-white font-semibold rounded-r-lg"
-                >
-                  Send
-                </button>
-              </form>
-              {/* Test button to throw bananas */}
-              <button
-                onClick={animateMonkeyThrow}
-                className="mt-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg"
+          </div>
+        </div>
+
+        {/* Characters and Question Box */}
+        <div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
+          <div
+            className="flex items-center justify-center w-full px-8"
+            style={{ marginLeft: "-240px", marginTop: "290px" }}
+          >
+            {" "}
+            {/* Increased marginTop */}
+            {/* Monkey Character */}
+            <div className="flex flex-col items-center mr-16 w-56 relative">
+              {" "}
+              {/* Adjust width here */}
+              <p className="text-xs">Health: 80/100</p>
+              <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+                <div
+                  className="h-full bg-green-500"
+                  style={{ width: "80%" }}
+                ></div>
+              </div>
+              <img
+                ref={monkeySprite}
+                src={`/${monkeyCurrentFrame}`}
+                alt="Monkey"
+                className="h-48 w-48 object-contain"
+              />
+              <img
+                ref={bananaSprite}
+                src="/banana.png"
+                alt="Monkey"
+                className="h-8 w-8 object-contain absolute right-[10px] bottom-[100px] invisible"
               />
             </div>
-          </>
-        ) : (
-          <div className="flex-grow overflow-hidden">
-            <Editor
-              height="100%"
-              defaultLanguage="javascript"
-              defaultValue="// Start coding here..."
-            />
+            {/* Cat Character */}
+            <div className="flex flex-col items-center ml-16 w-56">
+              {" "}
+              {/* Adjust width here */}
+              <p className="text-xs">Health: 60/100</p>
+              <div className="h-2 w-32 bg-gray-300 rounded mb-1">
+                <div
+                  className="h-full bg-red-500"
+                  style={{ width: "60%" }}
+                ></div>
+              </div>
+              <img
+                ref={catSprite}
+                src={`/${catCurrentFrame}`}
+                alt="Cat"
+                className="h-48 w-48 object-contain"
+              />
+            </div>
           </div>
-        )}
+
+          {/* Centered Question Box */}
+          <div
+            className="bg-white shadow-md p-2 rounded w-full text-black text-left"
+            style={{ height: "150px" }}
+          >
+            {" "}
+            {/* Adjust margin here */}
+            <h2 className="text-lg font-semibold">Question</h2>
+            <p className="mt-2">
+              Given an array of integers, return indices of the two numbers such
+              that they add up to a specific target. You may assume that each
+              input would have exactly one solution, and you may not use the
+              same element twice. You can return the answer in any order.
+            </p>
+          </div>
+        </div>
+
+        {/* Chatbox */}
+        <div className="fixed right-0 top-0 h-screen w-[570px] bg-white shadow-lg z-50 flex flex-col">
+          <div className="text-black flex flex-row items-center justify-between border-b border-gray-200 p-4">
+            <Timer />
+            {/* Toggle Buttons at Top Center */}
+            <div className="flex justify-center items-center">
+              <button
+                onClick={() => setIsChat(true)}
+                className={`px-4 py-2 rounded-l-lg ${
+                  isChat
+                    ? "bg-purple-800 text-white"
+                    : "bg-gray-200 text-gray-800"
+                } transition`}
+              >
+                Chat
+              </button>
+              <button
+                onClick={() => setIsChat(false)}
+                className={`px-4 py-2 rounded-r-lg ${
+                  !isChat
+                    ? "bg-blue-800 text-white"
+                    : "bg-gray-200 text-gray-800"
+                } transition`}
+              >
+                Code Editor
+              </button>
+            </div>
+          </div>
+
+          {isChat ? (
+            <>
+              <div className="text-black p-4">
+                <label htmlFor="ChatLanguageSelect">Chat Language: </label>
+                <select
+                  id="ChatLanguageSelect"
+                  value={chatLang}
+                  onChange={(e) => setChatLang(e.target.value)}
+                >
+                  <option value="en">English</option>
+                  <option value="zh_CN">Simplified Chinese</option>
+                </select>
+              </div>
+              <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
+                {messages.map((msg, index) => (
+                  <div
+                    className="text-black"
+                    key={index}
+                    style={{
+                      textAlign: msg.role === "user" ? "right" : "left",
+                      margin: "0.5rem 0",
+                    }}
+                  >
+                    <strong>
+                      {msg.role === "user" ? "You" : "Assistant"}:
+                    </strong>{" "}
+                    {msg.content.map((contentItem, idx) => (
+                      <span key={idx}>{contentItem.text}</span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <div className="p-4 border-t border-gray-200">
+                <form onSubmit={handleSubmit} className="flex items-center">
+                  <textarea
+                    ref={chatBoxRef}
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Type a message..."
+                    className="flex-grow p-3 border border-gray-300 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+                    rows={1}
+                    style={{ overflowWrap: "break-word", width: "100%" }}
+                  />
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-purple-700 text-white font-semibold rounded-r-lg"
+                  >
+                    Send
+                  </button>
+                </form>
+                {/* Test button to throw bananas */}
+                {/* <button
+                  onClick={animateMonkeyThrow}
+                  className="mt-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg"
+                /> */}
+              </div>
+            </>
+          ) : (
+            <div className="flex-grow overflow-hidden">
+              <Editor
+                height="100%"
+                defaultLanguage="javascript"
+                defaultValue="// Start coding here..."
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  else
+    return (
+      // Levels selection
+      // TODO: Add a proper design for level selection
+      <div className="flex justify-center items-center h-[100vh]">
+        <div className="flex">
+          {/* level selection cards */}
+          <button value="easy"  onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
+            easy
+          </button>
+          <button value="medium" onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
+            medium
+          </button>
+          <button value="hard" onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
+            hard
+          </button>
+        </div>
+      </div>
+    );
 }
