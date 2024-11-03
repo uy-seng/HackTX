@@ -78,8 +78,8 @@ export default function Home() {
       className="flex relative min-h-screen bg-cover"
       style={{
         backgroundImage:
-          "url('https://cdna.artstation.com/p/assets/images/images/019/969/350/large/florian-mazreku-outcasts-background-final.jpg?1565792939')",
-      }}
+"url('/background.jpg')"
+}}
     >
       <Timer />
       <div className="absolute top-10 left-10">
@@ -132,10 +132,10 @@ export default function Home() {
 
 {/* Characters and Question Box */}
 <div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
-  <div className="flex items-center justify-center w-full px-8" style={{ marginLeft: '-240px', marginTop: '200px'}}>
+  <div className="flex items-center justify-center w-full px-8" style={{ marginLeft: '-240px', marginTop: '290px'}}> {/* Increased marginTop */}
     {/* Monkey Character */}
     <div className="flex flex-col items-center mr-16 w-56"> {/* Adjust width here */}
-    <p className="text-xs">Health: 80/100</p>
+      <p className="text-xs">Health: 80/100</p>
       <div className="h-2 w-32 bg-gray-300 rounded mb-1">
         <div className="h-full bg-green-500" style={{ width: '80%' }}></div>
       </div>
@@ -148,7 +148,7 @@ export default function Home() {
 
     {/* Cat Character */}
     <div className="flex flex-col items-center ml-16 w-56"> {/* Adjust width here */}
-    <p className="text-xs">Health: 60/100</p>
+      <p className="text-xs">Health: 60/100</p>
       <div className="h-2 w-32 bg-gray-300 rounded mb-1">
         <div className="h-full bg-red-500" style={{ width: '60%' }}></div>
       </div>
