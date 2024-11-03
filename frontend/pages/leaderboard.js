@@ -8,13 +8,12 @@ export default function LeaderboardPage({ data }) {
         <h1 className="text-black text-5xl">Score</h1>
       </div>
       <div className="my-3">
-
-      {data.map((user, idx) => (
-        <div key={idx} className="flex justify-between px-3">
-          <h1 className="text-black text-3xl">{user.username}</h1>
-          <h1 className="text-black text-3xl">{user.score}</h1>
-        </div>
-      ))}
+        {data.map((user, idx) => (
+          <div key={idx} className="flex justify-between px-3 my-3">
+            <h1 className="text-black text-3xl">{user.username}</h1>
+            <h1 className="text-black text-3xl">{user.score}</h1>
+          </div>
+        ))}
       </div>
     </div>
   </div>
