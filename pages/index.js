@@ -44,14 +44,26 @@ export default function Home() {
         .then((data) => {
           setSolutions((prev) => [...prev, data.solution]);
         });
+
     }
   }, [problems]);
+
 
   function handleCorrectAnswer() {
     sidebar.current.style.width = "0px";
     animateMonkeyThrow();
     setCompletedQuestions((prev) => [...prev, currentQuestion]);
-    setCurrentQuestion((prev) => prev + 1);
+    let tmp = currentQuestion
+
+    while(true){
+      if (!completedQuestions.includes((tmp + 1) % 3)){
+        setCurrentQuestion((tmp + 1) % 3);
+        break;
+      } else {
+        tmp = (tmp + 1) % 3
+      }
+    }
+
     // reset editor
     setIsChat(true)
   }
@@ -548,9 +560,11 @@ export default function Home() {
             <h2 className="text-lg font-semibold">Question</h2>
             <p className="mt-2">
               {problems.length > 0 && (
+                <>
                 <ReactMarkdown>
                   {problems[currentQuestion].statement}
                 </ReactMarkdown>
+                </>
               )}
             </p>
           </div>
