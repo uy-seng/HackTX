@@ -227,9 +227,9 @@ export default function Home() {
           className="fixed z-50 flex items-center"
           style={{ top: "0", left: "0", right: "570px" }}
         >
-          <div className="w-full px-4">
-            <div className="absolute left-0 flex justify-between w-full p-4">
-              <div className="flex flex-col items-center">
+          <div className="w-full px-4 py-4">
+          <div className="absolute left-20 flex justify-between w-3/4 p-4"> {/* Adjust left here */}
+          <div className="flex flex-col items-center">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">1</span>
                 </div>
@@ -255,8 +255,8 @@ export default function Home() {
 <div className="flex flex-col w-[calc(100%-570px)] h-screen p-4">
   {/* Centered Question Box */}
   <div
-  className="bg-white shadow-md p-4 rounded w-full text-black text-left mb-4 pt-10" // Added padding-top here
-  style={{ height: "190px" }}
+  className="bg-white shadow-md p-4 rounded w-full text-black text-left mb-4 pt-14" // Added padding-top here
+  style={{ height: "200px" }}
   >
     <h2 className="text-lg font-semibold pt-4">Question</h2>
     <p className="mt-2">
