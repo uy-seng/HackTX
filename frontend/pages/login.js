@@ -12,7 +12,7 @@ const Login = () => {
     setIsLoading(true); // Indicate loading state
 
     try {
-      const response = await fetch('https://localhost:3001/login', {
+      const response = await fetch('http://localhost:3001/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,6 +29,7 @@ const Login = () => {
         setMessage(`Login failed1: ${errorMessage}`); // Display error message
       }
     } catch (error) {
+      console.error(error);
       setMessage(`Login failed2: ${error.message}`); // Handle fetch errors
     } finally {
       setIsLoading(false); // Reset loading state

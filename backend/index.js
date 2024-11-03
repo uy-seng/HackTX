@@ -7,9 +7,16 @@ const { Pool } = require("pg");
 const codeExecutionRouter = require("./routes/code-execution");
 const problemsRouter = require("./routes/problems");
 const app = express();
-
 const cors = require('cors');
-app.use(cors());
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // Adjust this for your frontend's URL
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 const JWT_SECRET = process.env.JWT_SECRET;
