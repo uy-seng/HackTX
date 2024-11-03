@@ -38,6 +38,10 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        {/* Logo Image */}
+        <div className="flex justify-center mb-4">
+          <img src="/logo.png" alt="Logo" className="h-50 w-50 object-contain" />
+        </div>
         <h2 className="mb-6 text-2xl font-bold text-center text-purple-500">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
@@ -68,7 +72,9 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className={`w-full px-4 py-2 font-bold text-white rounded-md focus:outline-none ${isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+            className={`w-full px-4 py-2 font-bold text-white rounded-md focus:outline-none ${
+              isLoading ? 'bg-gray-400' : 'bg-purple-500 hover:bg-purple-600'
+            }`}
             disabled={isLoading} // Disable button during loading
           >
             {isLoading ? 'Logging in...' : 'Login'}
