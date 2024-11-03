@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 function Timer() {
-  const [time, setTime] = useState(180);
+  const [time, setTime] = useState(3600);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function Timer() {
 
   return (
     <div>
-      <p className="text-4xl font-bold">
+      <p className="text-xl font-bold">
         Time left: {`${Math.floor(time / 60)}`.padStart(2, '0')}:
         {`${time % 60}`.padStart(2, '0')}
       </p>

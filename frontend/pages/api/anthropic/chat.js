@@ -21,6 +21,7 @@ export default async function handler(req, res) {
   }
 
   const { userMessage, lang, problem, solutions } = req.body;
+
   // Create interview prompt
   const promptTemplate = `
 You are an AI simulating a technical interviewer for a coding problem. Your task is to engage in a realistic interview conversation, focusing on the interviewee's problem-solving approach rather than just the final solution.
@@ -30,7 +31,7 @@ ${problem}
 </problem>
 
 <solutions>
-${solutions.join("")}
+${solutions}
 </solutions>
 
 Instructions:
