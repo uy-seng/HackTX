@@ -1,25 +1,26 @@
-// pages/register.js
 import { useState } from 'react';
+import { useRouter } from 'next/router'; // Import the useRouter hook
 
 export default function Register() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter(); // Initialize the router
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can add your API call here to send the data to your backend
-    const response = await fetch('/api/register', {
+    
+    const response = await fetch('http://localhost:3000/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (response.ok) {
-      // Handle successful registration (e.g., redirect or show a success message)
+      // Handle successful registration by redirecting to the login page
       alert('Registration successful!');
+      router.push('/login'); // Redirect to the login page
     } else {
       // Handle errors (e.g., show error message)
       alert('Registration failed. Please try again.');
@@ -40,19 +41,6 @@ export default function Register() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
