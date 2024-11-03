@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState} from "react";
 import Timer from "./timer";
 import Editor from "@monaco-editor/react";
+import { useRouter } from "next/router";
+import { jwtDecode } from "jwt-decode";
 
 export default function Home() {
   /**
@@ -16,6 +18,14 @@ export default function Home() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [chatLang, setChatLang] = useState("en"); // Define chatLang here
+  const [userCode, setUserCode] = useState([]);
+  const router = useRouter();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
+  }, [])
+  const [llmThinking, setLlmThinking] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -178,6 +188,41 @@ export default function Home() {
     }, 50); // Adjust movement speed as needed
   }
 
+
+  function handleCorrectAnswer() {
+    // TODO: implement;
+    alert("Correct answer");
+  }
+
+  function handleWrongAnswer() {
+    // TODO: implement
+    alert("Wrong answer");
+  }
+
+  async function compileCodeHandler() {
+    const currentUserCode = userCode[currentQuestion];
+    // TODO: remove hardcoded user id
+    const jwtData = jwtDecode(localStorage.getItem("token"));
+    const temp = await fetch("http://localhost:3001/code-execution/submit", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: jwtData.id.toString(),
+        lang: "py",
+        code: currentUserCode,
+        problemId: problems[currentQuestion].id
+      }),
+      headers: {
+        'Content-Type': "application/json"
+      }
+    });
+    const data = await temp.json();
+    if (data.verdict !== "AC") {
+      handleWrongAnswer();
+    } else {
+      handleCorrectAnswer();
+    }
+  }
+
   // Function to detect collision between banana and cat
   function detectCollision(a, b, offset = 0) {
     const aRect = a.current.getBoundingClientRect();
@@ -203,7 +248,16 @@ export default function Home() {
       // Fetch problems based on level
       fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${level}`)
         .then((res) => res.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          data.problems.forEach((problem) => {
+            setProblems((prev) => [
+              ...prev,
+              { statement: problem.statement, id: problem.id },
+            ]);
+            setCodeTemplate((prev) => [...prev, problem.templates[2]]);
+            setUserCode((prev) => [...prev, problem.templates[2]]);
+          });
+        });
     }
   }, [level])
   /** end of levels selection */
@@ -227,8 +281,8 @@ export default function Home() {
           className="fixed z-50 flex items-center"
           style={{ top: "0", left: "0", right: "570px" }}
         >
-          <div className="w-full px-4">
-            <div className="absolute left-0 flex justify-between w-full p-4">
+          <div className="w-full px-4 py-4">
+            <div className="absolute left-20 flex justify-between w-3/4 p-4">
               <div className="flex flex-col items-center">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
                   <span className="text-black">1</span>
@@ -255,8 +309,8 @@ export default function Home() {
 <div className="flex flex-col w-[calc(100%-570px)] h-screen p-4">
   {/* Centered Question Box */}
   <div
-  className="bg-white shadow-md p-4 rounded w-full text-black text-left mb-4 pt-10" // Added padding-top here
-  style={{ height: "190px" }}
+  className="bg-white shadow-md p-4 rounded w-full text-black text-left mb-4 pt-14" // Added padding-top here
+  style={{ height: "200px" }}
   >
     <h2 className="text-lg font-semibold pt-4">Question</h2>
     <p className="mt-2">
@@ -332,6 +386,9 @@ export default function Home() {
                 Code Editor
               </button>
             </div>
+            <button className="bg-gray-200 p-3 rounded-lg" onClick={async () => {
+              await compileCodeHandler();
+            }}>compile</button>
           </div>
 
           {isChat ? (
@@ -399,6 +456,12 @@ export default function Home() {
                 height="100%"
                 defaultLanguage="python"
                 defaultValue={codeTemplates[currentQuestion].code}
+                onChange={(value, _) => {
+                  setUserCode((prev) => prev.map((code, idx) => {
+                    if (idx === currentQuestion) return value;
+                    return code;
+                  }))
+                }}
               />
               }
             </div>
@@ -407,43 +470,49 @@ export default function Home() {
       </div>
     );
   else
-  return (
-    <div id="background" className="flex items-center justify-center h-screen"> {/* Center content vertically and horizontally */}
+    return (
       <div
-        className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
-        style={{
-          maxWidth: '400px', // Set a maximum width for the container
-          width: '100%', // Ensure it takes full width up to max-width
-        }}
+        id="background"
+        className="flex items-center justify-center h-screen"
       >
-        <h2 className="text-2xl font-bold text-black mb-4">Choose Your Difficulty:</h2>
-        
-        {/* Level selection buttons */}
-        <div className="flex flex-col items-center">
-          <button
-            value="easy"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Easy
-          </button>
-          <button
-            value="medium"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Medium
-          </button>
-          <button
-            value="hard"
-            onClick={(e) => setLevel(e.target.value)}
-            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
-          >
-            Hard
-          </button>
+        {" "}
+        {/* Center content vertically and horizontally */}
+        <div
+          className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
+          style={{
+            maxWidth: "400px", // Set a maximum width for the container
+            width: "100%", // Ensure it takes full width up to max-width
+          }}
+        >
+          <h2 className="text-2xl font-bold text-black mb-4">
+            Choose Your Difficulty:
+          </h2>
+
+          {/* Level selection buttons */}
+          <div className="flex flex-col items-center">
+            <button
+              value="easy"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Easy
+            </button>
+            <button
+              value="medium"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Medium
+            </button>
+            <button
+              value="hard"
+              onClick={(e) => setLevel(e.target.value)}
+              className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+            >
+              Hard
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-  
-}  
+    );
+}
