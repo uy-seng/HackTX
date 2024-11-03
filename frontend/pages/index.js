@@ -79,7 +79,7 @@ export default function Home() {
   const bananaSprite = useRef(null);
   const catSprite = useRef(null);
   let monkeyFrames = [
-    "mockey-throw-bananas-1.png",
+    "mockey.gif",
     "mockey-throw-bananas-2.png",
     "mockey-throw-bananas-3.png",
     "mockey-throw-bananas-4.png",
@@ -94,10 +94,10 @@ export default function Home() {
     "mockey-laugh-2.png",
   ];
   const [monkeyCurrentFrame, setMonkeyCurrentFrame] = useState(
-    "mockey-throw-bananas-1.png"
+    "mockey.gif"
   );
   let catFrames = ["cat.png", "cat-angry.png"];
-  const [catCurrentFrame, setCatCurrentFrame] = useState("cat.png");
+  const [catCurrentFrame, setCatCurrentFrame] = useState("cat.gif");
   let currentMonkeyFrame = 0;
   let currentCatFrame = 0;
   let monkeyAnimationInterval;
@@ -126,7 +126,7 @@ export default function Home() {
       currentMonkeyFrame++;
       if (currentMonkeyFrame >= monkeyFrames.length) {
         clearInterval(monkeyAnimationInterval);
-        setMonkeyCurrentFrame("mockey-throw-bananas-1.png");
+        setMonkeyCurrentFrame("mockey.gif");
         currentMonkeyFrame = 0;
       }
     }, 100); // Adjust the frame interval as needed
@@ -145,7 +145,7 @@ export default function Home() {
     setTimeout(() => {
       currentCatFrame = 0;
       clearInterval(catAnimationInterval);
-      setCatCurrentFrame("cat.png"); // Reset to default frame
+      setCatCurrentFrame("cat.gif"); // Reset to default frame
     }, 2000); // Adjust the timeout duration as needed
   }
 
