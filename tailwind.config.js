@@ -16,7 +16,7 @@ module.exports = {
         foreground: "var(--foreground)",
       },
       backgroundImage: {
-        'outcast-bg': "url('/background.jpg')"
+        'outcast-bg': "url('*/background.jpg')"
       },
     },
   },
