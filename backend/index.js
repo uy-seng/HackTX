@@ -8,6 +8,7 @@ const codeExecutionRouter = require("./routes/code-execution");
 const app = express();
 
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const pool = new Pool({
   host: PGHOST,
@@ -58,7 +59,7 @@ app.post("/register", async(req, res) => {
   }
 });
 
-app.post("/login", async(res, req) => {
+app.post("/login", async(req, res) => {
   const { username, password } = req.body; //extract body information
 
   try {
