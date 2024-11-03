@@ -15,7 +15,7 @@ function Timer() {
     }, []);
   
     return (
-      <div className="App">
+      <div>
         <p>
           Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
           {`${time % 60}`.padStart(2, 0)}
