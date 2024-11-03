@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState} from "react";
 import Timer from "./timer";
 import Editor from "@monaco-editor/react";
+import { useRouter } from "next/router";
+import { jwtDecode } from "jwt-decode";
 
 export default function Home() {
   /**
@@ -16,6 +18,13 @@ export default function Home() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [chatLang, setChatLang] = useState("en"); // Define chatLang here
+  const [userCode, setUserCode] = useState([]);
+  const router = useRouter();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -191,10 +200,11 @@ export default function Home() {
   async function compileCodeHandler() {
     const currentUserCode = userCode[currentQuestion];
     // TODO: remove hardcoded user id
+    const jwtData = jwtDecode(localStorage.getItem("token"));
     const temp = await fetch("http://localhost:3001/code-execution/submit", {
       method: "POST",
       body: JSON.stringify({
-        userId: "1",
+        userId: jwtData.id.toString(),
         lang: "py",
         code: currentUserCode,
         problemId: problems[currentQuestion].id
