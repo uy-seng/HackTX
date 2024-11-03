@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState} from "react";
 import Timer from "./timer";
 import Editor from "@monaco-editor/react";
 import { useRouter } from "next/router";
@@ -338,6 +338,41 @@ export default function Home() {
         clearInterval(bananaInterval);
       }
     }, 50); // Adjust movement speed as needed
+  }
+
+
+  function handleCorrectAnswer() {
+    // TODO: implement;
+    alert("Correct answer");
+  }
+
+  function handleWrongAnswer() {
+    // TODO: implement
+    alert("Wrong answer");
+  }
+
+  async function compileCodeHandler() {
+    const currentUserCode = userCode[currentQuestion];
+    // TODO: remove hardcoded user id
+    const jwtData = jwtDecode(localStorage.getItem("token"));
+    const temp = await fetch("http://localhost:3001/code-execution/submit", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: jwtData.id.toString(),
+        lang: "py",
+        code: currentUserCode,
+        problemId: problems[currentQuestion].id
+      }),
+      headers: {
+        'Content-Type': "application/json"
+      }
+    });
+    const data = await temp.json();
+    if (data.verdict !== "AC") {
+      handleWrongAnswer();
+    } else {
+      handleCorrectAnswer();
+    }
   }
 
   // Function to detect collision between banana and cat
