@@ -1,5 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { Pool } = require("pg"); //postgres library
+const dotenv = require("dotenv").config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
 const {
   writeCodeToFile,
   getTestCaseNames,
@@ -8,11 +13,28 @@ const {
   cleanUpSubmissionFile,
 } = require("../code-execution-engine/runner");
 
-router.get("/", (req, res) => {
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+
+const pool = new Pool({
+  host: PGHOST,
+  database: PGDATABASE,
+  user: PGUSER,
+  password: PGPASSWORD,
+  port: 5432, // neon postgres port
+  ssl: {
+    rejectUnauthorized: false,
+  },
+
+  connectionTimeoutMillis: 15000, // wait 15 seconds before timeout error
+  idleTimeoutMillis: 15000,
+});
+
+router.get("/", (req, res) => { // welcome message route
   return res.json({
     msg: "Welcome to code execution engine",
   });
 });
+
 
 /*
  *
