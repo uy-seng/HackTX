@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router'; // Import the useRouter hook
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter(); // Initialize the router
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,6 +26,7 @@ const Login = () => {
         const data = await response.json();
         localStorage.setItem('token', data.token); // Store token securely
         setMessage('Login successful!'); // Update message
+        router.push('/');
       } else {
         const errorMessage = await response.text();
         setMessage(`Login failed1: ${errorMessage}`); // Display error message
