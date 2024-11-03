@@ -15,7 +15,7 @@ const Login = () => {
     setIsLoading(true); // Indicate loading state
 
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('http://api.mockeyinterview.tech/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
