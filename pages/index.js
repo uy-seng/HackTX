@@ -231,7 +231,7 @@ export default function Home() {
       } else {
         currentMonkeyFrame++;
       }
-    }, 100); // Adjust the frame interval as needed
+    }, 300); // Adjust the frame interval as needed
   }
 
   // Function to animate Monkey's throw
