@@ -340,17 +340,6 @@ export default function Home() {
     }, 50); // Adjust movement speed as needed
   }
 
-
-  function handleCorrectAnswer() {
-    // TODO: implement;
-    alert("Correct answer");
-  }
-
-  function handleWrongAnswer() {
-    // TODO: implement
-    alert("Wrong answer");
-  }
-
   async function compileCodeHandler() {
     const currentUserCode = userCode[currentQuestion];
     // TODO: remove hardcoded user id
