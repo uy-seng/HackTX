@@ -21,7 +21,6 @@ body {
   background: var(--background);
   font-family: 'Pixelify Sans', sans-serif;
 }
-
 #background {
   position: absolute;
   top: 0;
@@ -30,15 +29,16 @@ body {
   height: 100vh; /* Full height */
   background-image: url('../public/loopbg.png');
   background-repeat: repeat-x; /* Repeat horizontally */
-  background-size: cover;
+  background-size: calc(100% + 400px); /* Extend width by 400px */
   animation: scrollRight 10s linear infinite; /* Infinite right scroll */
 }
 
+/* Define keyframes for smooth scrolling to the right */
 @keyframes scrollRight {
-  from {
+  0% {
     background-position: 0 0;
   }
-  to {
+  100% {
     background-position: 100% 0;
   }
 }
