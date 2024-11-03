@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const { Pool } = require("pg");
 const codeExecutionRouter = require("./routes/code-execution");
+const problemsRouter = require("./routes/problems");
 const app = express();
 
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
@@ -21,6 +22,7 @@ const pool = new Pool({
 
 app.use(express.json());
 app.use("/code-execution", codeExecutionRouter);
+app.use("/problems", problemsRouter);
 app.get("/", async (req, res) => {
   try {
     console.log("Attempting to connect to the database...");
