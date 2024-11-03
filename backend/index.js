@@ -52,6 +52,7 @@ app.post("/register", async(req, res) => {
       "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
       [username, hashedPassword]
     );
+    console.log(result);
 
     await db.query("INSERT INTO leaderboard (user_id, score) VALUES ($1, $2)", [result.rows[0].id, 0]);
 

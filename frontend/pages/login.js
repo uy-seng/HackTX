@@ -6,11 +6,39 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Your login logic here
+    setMessage('');
+    setIsLoading(true); // Indicate loading state
+  
+    try {
+      const response = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // Store token securely
+        setMessage('Login successful!'); // Update message
+        router.push('/'); // Redirect to home
+      } else {
+        const errorMessage = await response.text(); // Get the error message from the response
+        setMessage(`Login failed: ${errorMessage}`); // Display error message
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage(`Login failed: ${error.message}`); // Handle fetch errors
+    } finally {
+      setIsLoading(false); // Reset loading state
+    }
   };
+  
 
   return (
     <div id="background" className="flex items-center justify-center h-screen">
