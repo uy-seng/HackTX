@@ -439,11 +439,14 @@ export default function Home() {
             </>
           ) : (
             <div className="flex-grow overflow-hidden">
+              {
+                codeTemplates.length > 0 &&
               <Editor
                 height="100%"
-                defaultLanguage="javascript"
-                defaultValue="// Start coding here..."
+                defaultLanguage="python"
+                defaultValue={codeTemplates[currentQuestion].code}
               />
+              }
             </div>
           )}
         </div>
