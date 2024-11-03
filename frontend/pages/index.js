@@ -1,8 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Timer from "./timer";
 import Editor from "@monaco-editor/react";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
+  /**
+   * problems, solutions and code template selection
+   */
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [problems, setProblems] = useState([]);
+  const [solutions, setSolutions] = useState([]);
+  const [codeTemplates, setCodeTemplate] = useState([]);
+  useEffect(() => {
+    console.log(problems);
+    if (problems.length > 0) {
+      // loop through problems and fetch solutions
+      problems.forEach((problem) => {
+        fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${problem.id}/solutions`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setSolutions((prev) => [...prev, data.solutions]);
+          });
+      });
+    }
+  }, [problems]);
+  /** end of question selection */
+
   /**
    * LLM Related Stuff
    */
@@ -16,6 +41,7 @@ export default function Home() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [chatLang, setChatLang] = useState("en"); // Define chatLang here
+  const [llmThinking, setLlmThinking] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +54,17 @@ export default function Home() {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
+      setMessages((prevMessages) => [...prevMessages, {role: "assistant", content: [{ type: "text", text: "Thinking..." }],}]);
+
       const response = await fetch("/api/anthropic/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userMessage: userInput, lang: chatLang }),
+        body: JSON.stringify({
+          userMessage: userInput,
+          lang: chatLang,
+          problem: problems[currentQuestion].statement,
+          solutions: solutions[currentQuestion],
+        }),
       });
 
       const data = await response.json();
@@ -203,21 +236,18 @@ export default function Home() {
       // Fetch problems based on level
       fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${level}`)
         .then((res) => res.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          data.problems.forEach((problem) => {
+            setProblems((prev) => [
+              ...prev,
+              { statement: problem.statement, id: problem.id },
+            ]);
+            setCodeTemplate((prev) => [...prev, problem.templates[2]]);
+          });
+        });
     }
-  }, [level])
+  }, [level]);
   /** end of levels selection */
-
-  /**
-   * problems, solutions and code template selection 
-   */
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [problems, setProblems] = useState([]);
-  const [solutions, setSolutions] = useState([]);
-  const [codeTemplates, setCodeTemplate] = useState([]);
-  /** end of question selection */
-
-
 
   if (level)
     return (
@@ -305,17 +335,18 @@ export default function Home() {
 
           {/* Centered Question Box */}
           <div
-            className="bg-white shadow-md p-2 rounded w-full text-black text-left"
+            className="bg-white shadow-md p-2 rounded w-full text-black text-left overflow-scroll"
             style={{ height: "150px" }}
           >
             {" "}
             {/* Adjust margin here */}
             <h2 className="text-lg font-semibold">Question</h2>
             <p className="mt-2">
-              Given an array of integers, return indices of the two numbers such
-              that they add up to a specific target. You may assume that each
-              input would have exactly one solution, and you may not use the
-              same element twice. You can return the answer in any order.
+              {problems.length > 0 && (
+                <ReactMarkdown>
+                  {problems[currentQuestion].statement}
+                </ReactMarkdown>
+              )}
             </p>
           </div>
         </div>

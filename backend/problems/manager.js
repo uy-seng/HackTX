@@ -41,7 +41,8 @@ const getProblemById = async (problemId) => {
   const templates = await getCodeTemplatesByProblemId(problemId);
   return {
     statement,
-    templates
+    templates,
+    id: problemId
   }
 }
 
