@@ -178,6 +178,39 @@ export default function Home() {
     }, 50); // Adjust movement speed as needed
   }
 
+  function handleCorrectAnswer() {
+    // TODO: implement;
+    alert("Correct answer");
+  }
+
+  function handleWrongAnswer() {
+    // TODO: implement
+    alert("Wrong answer");
+  }
+
+  async function compileCodeHandler() {
+    const currentUserCode = userCode[currentQuestion];
+    // TODO: remove hardcoded user id
+    const temp = await fetch("http://localhost:3001/code-execution/submit", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: "1",
+        lang: "py",
+        code: currentUserCode,
+        problemId: problems[currentQuestion].id
+      }),
+      headers: {
+        'Content-Type': "application/json"
+      }
+    });
+    const data = await temp.json();
+    if (data.verdict !== "AC") {
+      handleWrongAnswer();
+    } else {
+      handleCorrectAnswer();
+    }
+  }
+
   // Function to detect collision between banana and cat
   function detectCollision(a, b, offset = 0) {
     const aRect = a.current.getBoundingClientRect();
@@ -203,7 +236,16 @@ export default function Home() {
       // Fetch problems based on level
       fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${level}`)
         .then((res) => res.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          data.problems.forEach((problem) => {
+            setProblems((prev) => [
+              ...prev,
+              { statement: problem.statement, id: problem.id },
+            ]);
+            setCodeTemplate((prev) => [...prev, problem.templates[2]]);
+            setUserCode((prev) => [...prev, problem.templates[2]]);
+          });
+        });
     }
   }, [level])
   /** end of levels selection */
@@ -332,6 +374,9 @@ export default function Home() {
                 Code Editor
               </button>
             </div>
+            <button className="bg-gray-200 p-3 rounded-lg" onClick={async () => {
+              await compileCodeHandler();
+            }}>compile</button>
           </div>
 
           {isChat ? (
@@ -399,6 +444,12 @@ export default function Home() {
                 height="100%"
                 defaultLanguage="python"
                 defaultValue={codeTemplates[currentQuestion].code}
+                onChange={(value, _) => {
+                  setUserCode((prev) => prev.map((code, idx) => {
+                    if (idx === currentQuestion) return value;
+                    return code;
+                  }))
+                }}
               />
               }
             </div>
