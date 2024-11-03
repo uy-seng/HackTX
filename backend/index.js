@@ -1,11 +1,11 @@
 const express = require("express");
-const router = express.Router();
 const dotenv = require("dotenv").config();
 const jwt = require("jsonwebtoken"); //jwt token library
 const bcrypt = require("bcrypt"); // library for hashing passwords
-const { Pool } = require("pg");
 const codeExecutionRouter = require("./routes/code-execution");
 const problemsRouter = require("./routes/problems");
+const leaderboardRouter = require("./routes/leaderboard");
+const db = require("./utils/db");
 const app = express();
 const cors = require('cors');
 
@@ -18,27 +18,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const pool = new Pool({
-  host: PGHOST,
-  database: PGDATABASE,
-  user: PGUSER,
-  password: PGPASSWORD,
-  port: 5432, // neons postgres port
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 app.use(express.json());
 app.use("/code-execution", codeExecutionRouter);
 app.use("/problems", problemsRouter);
+app.use("/leaderboard", leaderboardRouter);
 app.get("/", async (req, res) => {
   try {
     console.log("Attempting to connect to the database...");
-    const result = await pool.query(
+    const result = await db.query(
       "SELECT version(), current_setting('server_version'), current_setting('server_version_num')",
     );
     // const result = await pool.query("SELECT * FROM accounts");
@@ -58,7 +48,7 @@ app.post("/register", async(req, res) => {
     //hash password using bcrypt library
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await pool.query(
+    const result = await db.query(
       "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
       [username, hashedPassword]
     );
@@ -75,7 +65,7 @@ app.post("/login", async(req, res) => {
   const { username, password } = req.body; //extract body information
 
   try {
-    const result = await pool.query (
+    const result = await db.query (
       "SELECT * FROM users WHERE username = $1", [username]
     ); //checking if user exists in db
 
