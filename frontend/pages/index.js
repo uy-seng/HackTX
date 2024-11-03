@@ -4,22 +4,9 @@ import hash from "object-hash";
 import Editor from "@monaco-editor/react";
 
 export default function Home() {
-  const initialData = JSON.stringify(
-    {
-      name: "Example",
-      description: "This is an example JSON",
-      version: "1.0.0",
-    },
-    null,
-    2
-  );
-
-  const initialHash = hash(initialData);
-
-  // Example progress value (out of 100)
-  const progress = 40; // Set this dynamically based on actual game progress
-  const chatBoxRef = useRef(null);
-  const [isChat, setIsChat] = useState(true); // State to toggle between chat and code editor
+  /**
+   * LLM Related Stuff
+   */
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -69,6 +56,13 @@ export default function Home() {
 
     setUserInput(""); // Clear the input field
   };
+  /** end of LLM Related Stuff */
+
+  /**
+   * Chat Box Related Stuff
+   */
+  const chatBoxRef = useRef(null);
+  const [isChat, setIsChat] = useState(true); // State to toggle between chat and code editor
 
   useEffect(() => {
     if (chatBoxRef.current) {
@@ -76,13 +70,136 @@ export default function Home() {
       chatBoxRef.current.style.height = `${chatBoxRef.current.scrollHeight}px`;
     }
   }, [userInput]);
+  /** end of Chatbox related stuff */
+
+  /**
+   * Monkey throwing bananas animations stuff
+   */
+  const monkeySprite = useRef(null);
+  const bananaSprite = useRef(null);
+  const catSprite = useRef(null);
+  let monkeyFrames = [
+    "mockey-throw-bananas-1.png",
+    "mockey-throw-bananas-2.png",
+    "mockey-throw-bananas-3.png",
+    "mockey-throw-bananas-4.png",
+    "mockey-throw-bananas-5.png",
+    "mockey-laugh-1.png",
+    "mockey-laugh-2.png",
+    "mockey-laugh-1.png",
+    "mockey-laugh-2.png",
+    "mockey-laugh-1.png",
+    "mockey-laugh-2.png",
+    "mockey-laugh-1.png",
+    "mockey-laugh-2.png",
+  ];
+  const [monkeyCurrentFrame, setMonkeyCurrentFrame] = useState(
+    "mockey-throw-bananas-1.png"
+  );
+  let catFrames = ["cat.png", "cat-angry.png"];
+  const [catCurrentFrame, setCatCurrentFrame] = useState("cat.png");
+  let currentMonkeyFrame = 0;
+  let currentCatFrame = 0;
+  let monkeyAnimationInterval;
+  let catAnimationInterval;
+
+  // Function to animate Monkey's throw
+  function animateMonkeyThrow() {
+    monkeyAnimationInterval = setInterval(() => {
+      setMonkeyCurrentFrame(monkeyFrames[currentMonkeyFrame]);
+      if (currentMonkeyFrame >= 4) {
+        clearInterval(monkeyAnimationInterval);
+        throwBanana();
+        setMonkeyCurrentFrame("mockey-throw-bananas-1.png");
+        currentMonkeyFrame = 0;
+      }else{
+        currentMonkeyFrame++;
+      }
+    }, 100); // Adjust the frame interval as needed
+  }
+
+  // Function to animate Monkey's laugh
+  function animateMonkeyLaugh() {
+    currentMonkeyFrame = 5;
+    monkeyAnimationInterval = setInterval(() => {
+      setMonkeyCurrentFrame(monkeyFrames[currentMonkeyFrame]);
+      currentMonkeyFrame++;
+      if (currentMonkeyFrame >= monkeyFrames.length) {
+        clearInterval(monkeyAnimationInterval);
+        setMonkeyCurrentFrame("mockey-throw-bananas-1.png");
+        currentMonkeyFrame = 0;
+      }
+    }, 100); // Adjust the frame interval as needed
+  }
+
+  // Function to animate Cat's angry face
+  function animateCatAngry() {
+    const catAnimationInterval = setInterval(() => {
+      if (currentCatFrame < catFrames.length) {
+        setCatCurrentFrame(catFrames[currentCatFrame]);
+        currentCatFrame++;
+      }
+    }, 50); // Adjust the frame interval as needed
+  
+    // Stop the animation after a set duration (e.g., 5 seconds)
+    setTimeout(() => {
+      currentCatFrame = 0;
+      clearInterval(catAnimationInterval);
+      setCatCurrentFrame("cat.png"); // Reset to default frame
+    }, 2000); // Adjust the timeout duration as needed
+  }
+
+
+  // Function to throw the banana
+  function throwBanana() {
+    bananaSprite.current.style.visibility = "visible"; // Make banana visible
+    bananaSprite.current.style.right = "10px"; // Starting position near Monkey
+
+    let bananaPosition = 10; // Starting x position
+    let rotationAngle = 0; // Initial rotation angle
+
+    const bananaInterval = setInterval(() => {
+      bananaPosition -= 10; // Move banana to the right
+      rotationAngle += 10; // Increment rotation angle
+
+      // Update banana's position and rotation
+      bananaSprite.current.style.right = `${bananaPosition}px`;
+      bananaSprite.current.style.transform = `rotate(${rotationAngle}deg)`;
+
+      // Check for collision with the "cat"
+      if (detectCollision(bananaSprite, catSprite, -40)) {
+        bananaSprite.current.style.visibility = "hidden"; // Hide banana on collision
+        clearInterval(bananaInterval);
+        animateMonkeyLaugh();
+        animateCatAngry();
+      }
+
+      // Stop the banana if it goes off screen
+      if (bananaPosition > window.innerWidth) {
+        bananaSprite.current.style.visibility = "hidden"; // Hide banana when it goes out of bounds
+        clearInterval(bananaInterval);
+      }
+    }, 50); // Adjust movement speed as needed
+  }
+
+  // Function to detect collision between banana and cat
+  function detectCollision(a, b, offset = 0) {
+    const aRect = a.current.getBoundingClientRect();
+    const bRect = b.current.getBoundingClientRect();
+  
+    return !(
+      aRect.right < bRect.left - offset ||   // Extend left boundary of b
+      aRect.left > bRect.right + offset ||   // Extend right boundary of b
+      aRect.bottom < bRect.top - offset ||   // Extend top boundary of b
+      aRect.top > bRect.bottom + offset      // Extend bottom boundary of b
+    );
+  }
+  /** end of monkey throwing bananas animation */
 
   return (
     <div
       className="flex relative min-h-screen bg-cover"
-      style={{
-        backgroundImage: "url('/background.jpg')",
-      }}
+      id="background"
     >
       {/* Progress Bar */}
       <div
@@ -90,12 +207,6 @@ export default function Home() {
         style={{ top: "0", left: "0", right: "570px" }}
       >
         <div className="w-full px-4">
-          {/* <div className="bg-gray-300 h-4">
-            <div
-              className="h-full bg-blue-500 transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div> */}
           <div className="absolute left-0 flex justify-between w-full p-4">
             <div className="flex flex-col items-center">
               <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center border border-black">
@@ -128,7 +239,7 @@ export default function Home() {
           {" "}
           {/* Increased marginTop */}
           {/* Monkey Character */}
-          <div className="flex flex-col items-center mr-16 w-56">
+          <div className="flex flex-col items-center mr-16 w-56 relative">
             {" "}
             {/* Adjust width here */}
             <p className="text-xs">Health: 80/100</p>
@@ -139,9 +250,16 @@ export default function Home() {
               ></div>
             </div>
             <img
-              src="/mockey.png"
+              ref={monkeySprite}
+              src={`/${monkeyCurrentFrame}`}
               alt="Monkey"
               className="h-48 w-48 object-contain"
+            />
+            <img
+              ref={bananaSprite}
+              src="/banana.png"
+              alt="Monkey"
+              className="h-8 w-8 object-contain absolute right-[10px] bottom-[100px] invisible"
             />
           </div>
           {/* Cat Character */}
@@ -153,7 +271,8 @@ export default function Home() {
               <div className="h-full bg-red-500" style={{ width: "60%" }}></div>
             </div>
             <img
-              src="/cat.png"
+              ref={catSprite}
+              src={`/${catCurrentFrame}`}
               alt="Cat"
               className="h-48 w-48 object-contain"
             />
@@ -163,7 +282,7 @@ export default function Home() {
         {/* Centered Question Box */}
         <div
           className="bg-white shadow-md p-2 rounded w-full text-black text-left"
-          style={{ height: "150px", marginLeft: "-240px" }}
+          style={{ height: "150px" }}
         >
           {" "}
           {/* Adjust margin here */}
@@ -252,6 +371,11 @@ export default function Home() {
                   Send
                 </button>
               </form>
+              {/* Test button to throw bananas */}
+              <button
+                onClick={animateMonkeyThrow}
+                className="mt-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg"
+              />
             </div>
           </>
         ) : (
