@@ -30,7 +30,7 @@ body {
   background-image: url('../public/loopbg.png');
   background-repeat: repeat-x; /* Repeat horizontally */
   background-size: auto 100%; /* Maintain aspect ratio and cover full height */
-  animation: scrollRight 60s linear infinite; /* Increase duration for slower scroll */
+  animation: scrollRight 120s linear infinite; /* Increase duration for slower scroll */
 }
 
 /* Define keyframes for smooth scrolling to the right */
