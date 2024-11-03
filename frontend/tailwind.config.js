@@ -16,7 +16,7 @@ module.exports = {
         foreground: "var(--foreground)",
       },
       backgroundImage: {
-        'outcast-bg': "url('https://cdna.artstation.com/p/assets/images/images/019/969/350/large/florian-mazreku-outcasts-background-final.jpg?1565792939')",
+        'outcast-bg': "url('/background.jpg')"
       },
     },
   },

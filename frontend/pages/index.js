@@ -78,8 +78,8 @@ export default function Home() {
       className="flex relative min-h-screen bg-cover"
       style={{
         backgroundImage:
-          "url('https://cdna.artstation.com/p/assets/images/images/019/969/350/large/florian-mazreku-outcasts-background-final.jpg?1565792939')",
-      }}
+"url('/background.jpg')"
+}}
     >
       <Timer />
       <div className="absolute top-10 left-10">
@@ -132,9 +132,10 @@ export default function Home() {
 
 {/* Characters and Question Box */}
 <div className="flex flex-col justify-between items-center w-[calc(100%-570px)] p-4 min-h-screen">
-  <div className="flex items-center justify-center w-full px-8" style={{ marginLeft: '-240px', marginTop: '200px'}}>
+  <div className="flex items-center justify-center w-full px-8" style={{ marginLeft: '-240px', marginTop: '290px'}}> {/* Increased marginTop */}
     {/* Monkey Character */}
     <div className="flex flex-col items-center mr-16 w-56"> {/* Adjust width here */}
+      <p className="text-xs">Health: 80/100</p>
       <div className="h-2 w-32 bg-gray-300 rounded mb-1">
         <div className="h-full bg-green-500" style={{ width: '80%' }}></div>
       </div>
@@ -143,25 +144,24 @@ export default function Home() {
         alt="Monkey"
         className="h-48 w-48 object-contain"
       />
-      <p className="text-xs">Health: 80/100</p>
     </div>
 
     {/* Cat Character */}
     <div className="flex flex-col items-center ml-16 w-56"> {/* Adjust width here */}
+      <p className="text-xs">Health: 60/100</p>
       <div className="h-2 w-32 bg-gray-300 rounded mb-1">
-        <div className="h-full bg-green-500" style={{ width: '60%' }}></div>
+        <div className="h-full bg-red-500" style={{ width: '60%' }}></div>
       </div>
       <img
         src="/cat.png"
         alt="Cat"
         className="h-48 w-48 object-contain"
       />
-      <p className="text-xs">Health: 60/100</p>
     </div>
   </div>
 
   {/* Centered Question Box */}
-  <div className="bg-white shadow-md p-2 rounded w-full text-black text-center" style={{ height: '150px', marginLeft: '-240px'}}> {/* Adjust margin here */}
+  <div className="bg-white shadow-md p-2 rounded w-full text-black text-left" style={{ height: '150px', marginLeft: '-240px'}}> {/* Adjust margin here */}
     <h2 className="text-lg font-semibold">Question</h2>
     <p className="mt-2">
       Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.
@@ -190,7 +190,6 @@ export default function Home() {
 
         {isChat ? (
           <>
-            <h2 className="p-4 text-lg font-semibold text-black">Chat</h2>
             <div className="p-4 overflow-y-auto h-[calc(100%-56px)]">
               {messages.map((msg, index) => (
                 <div
