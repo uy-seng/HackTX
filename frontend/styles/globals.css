@@ -21,3 +21,24 @@ body {
   background: var(--background);
   font-family: 'Pixelify Sans', sans-serif;
 }
+
+#background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Full height */
+  background-image: url('../public/loopbg.png');
+  background-repeat: repeat-x; /* Repeat horizontally */
+  background-size: cover;
+  animation: scrollRight 10s linear infinite; /* Infinite right scroll */
+}
+
+@keyframes scrollRight {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}

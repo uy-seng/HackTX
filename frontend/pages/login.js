@@ -39,11 +39,11 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-center">Login</h2>
+        <h2 className="mb-6 text-2xl font-bold text-center text-purple-500">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-700">
-              Username:
+            <label htmlFor="username" className="block mb-2 text-sm font-medium text-purple-500">
+              Username
             </label>
             <input
               type="text"
@@ -55,8 +55,8 @@ const Login = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
-              Password:
+            <label htmlFor="password" className="block mb-2 text-sm font-medium text-purple-500">
+              Password
             </label>
             <input
               type="password"
