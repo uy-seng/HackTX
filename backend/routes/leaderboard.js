@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const result = await db.query("SELECT users.username, leaderboard.score from leaderboard INNER JOIN users ON users.id = leaderboard.user_id");
   return res.json({
-    data: result.rows
+    data: result.rows.sort((a, b) => b.score - a.score)
   })
 });
 

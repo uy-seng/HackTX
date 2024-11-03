@@ -53,6 +53,8 @@ app.post("/register", async(req, res) => {
       [username, hashedPassword]
     );
 
+    await db.query("INSERT INTO leaderboard (user_id, score) VALUES ($1, $2)", [result.rows[0].id, 0]);
+
     return res.status(201).json({ id: result.rows[0].id, username});
 
   } catch (error) {
