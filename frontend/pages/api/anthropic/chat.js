@@ -6,20 +6,21 @@ const anthropic = new Anthropic({
 
 // TODO: Update mock data to dynamic data for the problems
 // Predefined problem and solutions
-const problem =
-  "Giventwosortedarraysnums1andnums2ofsizemandnrespectively,returnthemedianofthetwosortedarrays.TheoverallruntimecomplexityshouldbeO(log(m+n)).Example1:Input:nums1=[1,3],nums2=[2]Output:2.00000Explanation:mergedarray=[1,2,3]andmedianis2.Example2:Input:nums1=[1,2],nums2=[3,4]Output:2.50000Explanation:mergedarray=[1,2,3,4]andmedianis(2+3)/2=2.5.";
-const solutions = [
-  "classSolution:deffindMedianSortedArrays(self,nums1:List[int],nums2:List[int])->float:m,n=len(nums1),len(nums2)p1,p2=0,0defget_min():nonlocalp1,p2ifp1<m&&p2<n:ifnums1[p1]<nums2[p2]:ans=nums1[p1]p1+=1else:ans=nums2[p2]p2+=1elifp2==n:ans=nums1[p1]p1+=1else:ans=nums2[p2]p2+=1returnansif(m+n)%2==0:for_inrange((m+n)//2-1):_=get_min()return(get_min()+get_min())/2else:for_inrange((m+n)//2):_=get_min()returnget_min()",
-  "classSolution:deffindMedianSortedArrays(self,A:List[int],B:List[int])->float:na,nblen(A),len(B)n=na+nbdefsolve(k,a_start,a_end,b_start,b_end):if(a_start>a_end):returnB[k-a_start]if(b_start>b_end):returnA[k-b_start]a_index,b_index=(a_start+a_end)//2,(b_start+b_end)//2a_value,b_value=A[a_index],B[b_index]ifa_index+b_index<k:ifa_value>b_value:returnsolve(k,a_start,a_end,b_index+1,b_end)elsereturnsolve(k,a_index+1,a_end,b_start,b_end)else:ifa_value>b_value:returnsolve(k,a_start,a_index-1,b_start,b_end)elsereturnsolve(k,a_start,a_end,b_start,b_index-1)ifn%2:returnsolve(n//2,0,na-1,0,nb-1)elsereturn(solve(n//2-1,0,na-1,0,nb-1)+solve(n//2,0,na-1,0,nb-1))/2",
-  "classSolution:def findMedianSortedArrays(self,nums1:List[int],nums2:List[int])->float:iflen(nums1)>len(nums2):returnself.findMedianSortedArrays(nums2,nums1)m,n=len(nums1),len(nums2)left,right=0,mwhileleft<=right:partitionA=(left+right)//2partitionB=(m+n+1)//2-partitionAmaxLeftA=(float('-inf')ifpartitionA==0elsnums1[partitionA-1])minRightA=float('inf')ifpartitionA==melse nums1[partitionA]maxLeftB=(float('-inf')ifpartitionB==0elsnums2[partitionB-1])minRightB=float('inf')ifpartitionB==nelse nums2[partitionB]ifmaxLeftA<=minRightB&&maxLeftB<=minRightA:if(m+n)%2==0:return(max(maxLeftA,maxLeftB)+min(minRightA,minRightB))/2elsereturnmax(maxLeftA,maxLeftB)elifmaxLeftA>minRightB:right=partitionA-1else:left=partitionA+1",
-];
+// const problem =
+//   "Giventwosortedarraysnums1andnums2ofsizemandnrespectively,returnthemedianofthetwosortedarrays.TheoverallruntimecomplexityshouldbeO(log(m+n)).Example1:Input:nums1=[1,3],nums2=[2]Output:2.00000Explanation:mergedarray=[1,2,3]andmedianis2.Example2:Input:nums1=[1,2],nums2=[3,4]Output:2.50000Explanation:mergedarray=[1,2,3,4]andmedianis(2+3)/2=2.5.";
+// const solutions = [
+//   "classSolution:deffindMedianSortedArrays(self,nums1:List[int],nums2:List[int])->float:m,n=len(nums1),len(nums2)p1,p2=0,0defget_min():nonlocalp1,p2ifp1<m&&p2<n:ifnums1[p1]<nums2[p2]:ans=nums1[p1]p1+=1else:ans=nums2[p2]p2+=1elifp2==n:ans=nums1[p1]p1+=1else:ans=nums2[p2]p2+=1returnansif(m+n)%2==0:for_inrange((m+n)//2-1):_=get_min()return(get_min()+get_min())/2else:for_inrange((m+n)//2):_=get_min()returnget_min()",
+//   "classSolution:deffindMedianSortedArrays(self,A:List[int],B:List[int])->float:na,nblen(A),len(B)n=na+nbdefsolve(k,a_start,a_end,b_start,b_end):if(a_start>a_end):returnB[k-a_start]if(b_start>b_end):returnA[k-b_start]a_index,b_index=(a_start+a_end)//2,(b_start+b_end)//2a_value,b_value=A[a_index],B[b_index]ifa_index+b_index<k:ifa_value>b_value:returnsolve(k,a_start,a_end,b_index+1,b_end)elsereturnsolve(k,a_index+1,a_end,b_start,b_end)else:ifa_value>b_value:returnsolve(k,a_start,a_index-1,b_start,b_end)elsereturnsolve(k,a_start,a_end,b_start,b_index-1)ifn%2:returnsolve(n//2,0,na-1,0,nb-1)elsereturn(solve(n//2-1,0,na-1,0,nb-1)+solve(n//2,0,na-1,0,nb-1))/2",
+//   "classSolution:def findMedianSortedArrays(self,nums1:List[int],nums2:List[int])->float:iflen(nums1)>len(nums2):returnself.findMedianSortedArrays(nums2,nums1)m,n=len(nums1),len(nums2)left,right=0,mwhileleft<=right:partitionA=(left+right)//2partitionB=(m+n+1)//2-partitionAmaxLeftA=(float('-inf')ifpartitionA==0elsnums1[partitionA-1])minRightA=float('inf')ifpartitionA==melse nums1[partitionA]maxLeftB=(float('-inf')ifpartitionB==0elsnums2[partitionB-1])minRightB=float('inf')ifpartitionB==nelse nums2[partitionB]ifmaxLeftA<=minRightB&&maxLeftB<=minRightA:if(m+n)%2==0:return(max(maxLeftA,maxLeftB)+min(minRightA,minRightB))/2elsereturnmax(maxLeftA,maxLeftB)elifmaxLeftA>minRightB:right=partitionA-1else:left=partitionA+1",
+// ];
 
 export default async function handler(req, res) {
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  const { userMessage, lang } = req.body;
+  const { userMessage, lang, problem, solutions } = req.body;
   // Create interview prompt
   const promptTemplate = `
 You are an AI simulating a technical interviewer for a coding problem. Your task is to engage in a realistic interview conversation, focusing on the interviewee's problem-solving approach rather than just the final solution.
