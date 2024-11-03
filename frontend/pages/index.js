@@ -419,22 +419,43 @@ export default function Home() {
       </div>
     );
   else
-    return (
-      // Levels selection
-      // TODO: Add a proper design for level selection
-      <div className="flex justify-center items-center h-[100vh]">
-        <div className="flex">
-          {/* level selection cards */}
-          <button value="easy"  onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
-            easy
+  return (
+    <div id="background" className="flex items-center justify-center h-screen"> {/* Center content vertically and horizontally */}
+      <div
+        className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
+        style={{
+          maxWidth: '400px', // Set a maximum width for the container
+          width: '100%', // Ensure it takes full width up to max-width
+        }}
+      >
+        <h2 className="text-2xl font-bold text-black mb-4">Choose Your Difficulty:</h2>
+        
+        {/* Level selection buttons */}
+        <div className="flex flex-col items-center">
+          <button
+            value="easy"
+            onClick={(e) => setLevel(e.target.value)}
+            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+          >
+            Easy
           </button>
-          <button value="medium" onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
-            medium
+          <button
+            value="medium"
+            onClick={(e) => setLevel(e.target.value)}
+            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+          >
+            Medium
           </button>
-          <button value="hard" onClick={(e) => setLevel(e.target.value)} className="bg-[#2E2053] w-16 p-4 flex justify-center items-center rounded-md border-white border-2 m-4">
-            hard
+          <button
+            value="hard"
+            onClick={(e) => setLevel(e.target.value)}
+            className="bg-[#2E2053] w-48 py-4 flex justify-center items-center rounded-md border-2 border-[#1B0D33] my-2 text-white font-bold text-xl"
+          >
+            Hard
           </button>
         </div>
       </div>
-    );
-}
+    </div>
+  );
+  
+}  

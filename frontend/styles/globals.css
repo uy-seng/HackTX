@@ -29,8 +29,8 @@ body {
   height: 100vh; /* Full height */
   background-image: url('../public/loopbg.png');
   background-repeat: repeat-x; /* Repeat horizontally */
-  background-size: calc(100% + 400px); /* Extend width by 400px */
-  animation: scrollRight 10s linear infinite; /* Infinite right scroll */
+  background-size: auto 100%; /* Maintain aspect ratio and cover full height */
+  animation: scrollRight 60s linear infinite; /* Increase duration for slower scroll */
 }
 
 /* Define keyframes for smooth scrolling to the right */
@@ -42,3 +42,5 @@ body {
     background-position: 100% 0;
   }
 }
+
+
