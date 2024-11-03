@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 function Timer() {
-  const [time, setTime] = useState(1800);
+  const [time, setTime] = useState(180);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function Timer() {
               onClick={() => setShowModal(false)}
               className="mt-10 px-8 py-4 bg-blue-700 text-white font-bold text-2xl rounded hover:bg-blue-900 transition"
             >
-              Keep playing
+              Keep Coding
             </button>
             <button
               onClick={() => window.location.reload()}
