@@ -188,7 +188,6 @@ export default function Home() {
     }, 50); // Adjust movement speed as needed
   }
 
-  const [userCode, setUserCode] = useState("")
 
   function handleCorrectAnswer() {
     // TODO: implement;
