@@ -67,7 +67,7 @@ export default function Home() {
     const currentUserCode = userCode[currentQuestion];
     // TODO: remove hardcoded user id
     const jwtData = jwtDecode(localStorage.getItem("token"));
-    const temp = await fetch("http://api.mockeyinterview.tech/code-execution/submit", {
+    const temp = await fetch("https://api.mockeyinterview.tech/code-execution/submit", {
       method: "POST",
       body: JSON.stringify({
         userId: jwtData.id.toString(),
@@ -355,7 +355,7 @@ export default function Home() {
     const currentUserCode = userCode[currentQuestion];
     // TODO: remove hardcoded user id
     const jwtData = jwtDecode(localStorage.getItem("token"));
-    const temp = await fetch("http://api.mockeyinterview.tech/code-execution/submit", {
+    const temp = await fetch("https://api.mockeyinterview.tech/code-execution/submit", {
       method: "POST",
       body: JSON.stringify({
         userId: jwtData.id.toString(),

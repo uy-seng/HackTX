@@ -21,7 +21,7 @@ export default function LeaderboardPage({ data }) {
 }
 
 export const getServerSideProps = async (ctx) => {
-  const temp = await fetch("http://api.mockeyinterview.tech/leaderboard", {
+  const temp = await fetch("https://api.mockeyinterview.tech/leaderboard", {
     method: "GET"
   });
   const { data } = await temp.json();
