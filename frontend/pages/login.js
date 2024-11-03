@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router'; // Import the useRouter hook
+
 const Login = () => {
-  // Your existing state and functions
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const router = useRouter();
+  const router = useRouter(); // Initialize the router
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsLoading(true); // Indicate loading state
-  
+
     try {
       const response = await fetch('http://localhost:3001/login', {
         method: 'POST',
@@ -21,7 +21,7 @@ const Login = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token); // Store token securely
@@ -38,15 +38,14 @@ const Login = () => {
       setIsLoading(false); // Reset loading state
     }
   };
-  
 
   return (
     <div id="background" className="flex items-center justify-center h-screen">
       <div
         className="flex flex-col justify-center items-center bg-white p-6 rounded-md shadow-lg"
         style={{
-          maxWidth: '400px', // Set a maximum width for the container
-          width: '100%', // Ensure it takes full width up to max-width
+          maxWidth: '400px',
+          width: '100%',
         }}
       >
         {/* Logo Image */}
@@ -85,15 +84,15 @@ const Login = () => {
             className={`w-full px-4 py-2 font-bold text-white rounded-md focus:outline-none transition-transform duration-200 ${
               isLoading ? 'bg-gray-400' : 'bg-purple-500 hover:bg-purple-800 hover:scale-105'
             }`}
-            disabled={isLoading} // Disable button during loading
+            disabled={isLoading}
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
         {message && <p className="mt-4 text-red-600">{message}</p>}
         <button
-          onClick={() => {/* Your register logic here */}}
-          className="mt-4 w-full px-4 py-2 font-bold text-white rounded-md bg-purple-500 hover:bg-purple-800 transition-transform duration-200 hover:scale-105 focus:outline-none"
+          onClick={() => router.push('/register')} // Redirect to register page
+          className="mt-4 w-full px-4 py-2 font-bold text-white rounded-md bg-blue-500 hover:bg-blue-800 transition-transform duration-200 hover:scale-105 focus:outline-none"
         >
           Register
         </button>
@@ -103,4 +102,3 @@ const Login = () => {
 };
 
 export default Login;
-
